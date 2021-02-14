@@ -19,6 +19,7 @@
 		6D095BAA253067E900333615 /* ApiConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D095BA9253067E900333615 /* ApiConstants.swift */; };
 		6D095BAC25307EC300333615 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D095BAB25307EC300333615 /* User.swift */; };
 		6D095BAE25307F4900333615 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D095BAD25307F4900333615 /* UserViewModel.swift */; };
+		B2095A3C25D928EC00182497 /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2095A3B25D928EC00182497 /* R.generated.swift */; };
 		B210C2E225315CD100A07861 /* GetUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B210C2E125315CD100A07861 /* GetUserDetailViewController.swift */; };
 		BC57215451728995DA2DE1AD /* Pods_NetworkHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 545E037B7B34BB0ECBD67488 /* Pods_NetworkHelper.framework */; };
 /* End PBXBuildFile section */
@@ -41,6 +42,7 @@
 		6D095BAB25307EC300333615 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		6D095BAD25307F4900333615 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		92BF9DD9329C729CF7BD71B7 /* Pods-NetworkHelper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkHelper.release.xcconfig"; path = "Target Support Files/Pods-NetworkHelper/Pods-NetworkHelper.release.xcconfig"; sourceTree = "<group>"; };
+		B2095A3B25D928EC00182497 /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = SOURCE_ROOT; };
 		B210C2E125315CD100A07861 /* GetUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -77,6 +79,7 @@
 		6D095B892530664100333615 /* NetworkHelper */ = {
 			isa = PBXGroup;
 			children = (
+				B2095A3B25D928EC00182497 /* R.generated.swift */,
 				6DDF30E525309DDB002C8C58 /* API_Client */,
 				6D095B8A2530664100333615 /* AppDelegate.swift */,
 				6D095B8C2530664100333615 /* SceneDelegate.swift */,
@@ -160,6 +163,7 @@
 			buildConfigurationList = 6D095B9E2530667000333615 /* Build configuration list for PBXNativeTarget "NetworkHelper" */;
 			buildPhases = (
 				C41E705AA5BF5BFDF3E4AF44 /* [CP] Check Pods Manifest.lock */,
+				B2095A3925D928B500182497 /* ShellScript */,
 				6D095B832530664100333615 /* Sources */,
 				6D095B842530664100333615 /* Frameworks */,
 				6D095B852530664100333615 /* Resources */,
@@ -238,6 +242,25 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NetworkHelper/Pods-NetworkHelper-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B2095A3925D928B500182497 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$TEMP_DIR/rswift-lastrun",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				$SRCROOT/R.generated.swift,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$PODS_ROOT/R.swift/rswift\" generate \"$SRCROOT/R.generated.swift\"\n";
+		};
 		C41E705AA5BF5BFDF3E4AF44 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -276,6 +299,7 @@
 				6D095B8F2530664100333615 /* ViewController.swift in Sources */,
 				6D095B8B2530664100333615 /* AppDelegate.swift in Sources */,
 				6D095BAE25307F4900333615 /* UserViewModel.swift in Sources */,
+				B2095A3C25D928EC00182497 /* R.generated.swift in Sources */,
 				6D095B8D2530664100333615 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
