@@ -11,11 +11,13 @@ import Combine
 
 class ViewController: UIViewController {
     
+    // MARK: Variables
     var users = [User]()
-    let userVm = UserViewModel()
+    var viewModel: UserViewModel?
     
     private var cancellables: Set<AnyCancellable> = []
     
+    // MARK: Outlets
     @IBOutlet weak var tblUser: UITableView! {
         didSet {
             self.tblUser.dataSource = self
@@ -26,26 +28,24 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        userVm.fetchUserList()
-        userVm.$users.sink { (user) in
-            self.users = user ?? []
+        viewModel = UserViewModel()
+        viewModel?.fetchUserList()
+        bindData()
+    }
+    
+    //Bind Data
+    func bindData() {
+        viewModel?.$users.sink {[weak self] (user) in
+            guard let `self` = self else { return }
+            self.users = user
             self.tblUser.reloadData()
         }.store(in: &cancellables)
         
-        userVm.$error.sink { (error) in
+        viewModel?.$error.sink {[weak self] (error) in
             print(error)
         }.store(in: &cancellables)
-        
-        setupViewModel()
     }
-    
-    func setupViewModel() {
-        userVm.getUserList = { [weak self] (user, error) in
-//            guard let _ = self else { return }
-//            self!.users = user ?? []
-//            self!.tblUser.reloadData()
-        }
-    }
+
 }
 
 extension ViewController: UITableViewDataSource,UITableViewDelegate {

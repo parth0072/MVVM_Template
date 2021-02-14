@@ -8,6 +8,6 @@ target 'NetworkHelper' do
   # Pods for NetworkHelper
   pod 'Alamofire'
   pod 'SwiftyJSON'
-
-
+  pod 'R.swift'
+  
 end
