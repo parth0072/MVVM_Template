@@ -1,55 +1,60 @@
 # MVVM Template (iOS)
 
-A modernized iOS MVVM starter template with typed networking, `Codable` models, and `Combine`-based UI binding.
+A starter iOS project that demonstrates the **MVVM (Model-View-ViewModel)** pattern with a simple GitHub Users example.
 
-## What Was Updated
+## Project Purpose
 
-- Replaced dynamic JSON parsing (`SwiftyJSON`) with strongly typed `Decodable` models.
-- Replaced `Alamofire` request usage in app code with `URLSession` and a reusable network client.
-- Introduced a `UserServicing` abstraction for cleaner dependency injection and testability.
-- Improved view model state flow with `Result` and `NetworkError` handling.
-- Updated controllers to use safer bindings and optional handling.
-- Cleaned app lifecycle boilerplate by removing unused Core Data setup.
-- Improved `.gitignore` for Xcode/CocoaPods artifacts.
+This repository is meant to be a base template for iOS apps that need:
+- clear separation between UI, business logic, and data layer
+- typed API handling with `URLSession` + `Codable`
+- reactive UI updates using `Combine`
+- a simple, extendable folder structure for scaling features
 
-## Recommended Structure
+You can clone this project and reuse its structure to bootstrap new MVVM-based iOS applications.
+
+## Tech Stack
+
+- Swift
+- UIKit
+- Combine
+- URLSession
+- Codable
+- CocoaPods (project dependency management)
+
+## Project Structure
 
 ```
 NetworkHelper/
-  API_Client/
-    ApiConstants.swift
-    ConnectionManager.swift
-    ConnectionManager+FetchRequest.swift
-  Models/
-    User.swift
-  ViewModels/
-    UserViewModel.swift
-  Controllers/
-    ViewController.swift
-    GetUserDetailViewController.swift
-  Resources/
-    Assets.xcassets
-    Base.lproj/
+  API_Client/      # API endpoints, request handling, network client
+  Models/          # Data models (Codable)
+  ViewModels/      # UI-facing business logic and state
+  Controllers/     # UIKit view controllers
+  View/            # Storyboards and UI files
 ```
 
-## Architecture Notes
+## How It Works
 
-- Keep `Models` as plain value types (`struct`) using `Codable`.
-- Keep networking behind protocol boundaries (`NetworkClientProtocol`, `UserServicing`).
-- Keep `ViewModels` UI-framework agnostic where possible.
-- Keep `Controllers` thin: bind, route, and render only.
-- Prefer `Result<T, NetworkError>` for API outcomes.
+- `ViewController` asks `UserViewModel` for data.
+- `UserViewModel` fetches from the service layer via `ConnectionManager`.
+- Network responses are decoded into `User` models.
+- Published state updates (`@Published`) refresh the UI.
 
 ## Getting Started
 
-1. Open the workspace:
+1. Clone the repo.
+2. Install pods:
+   ```bash
+   pod install
+   ```
+3. Open:
    - `NetworkHelper.xcworkspace`
-2. Install dependencies if needed:
-   - `pod install`
-3. Build and run the `NetworkHelper` scheme in Xcode.
+4. Build and run the `NetworkHelper` scheme.
 
-## Next Improvements
+## Template Usage
 
-- Add unit tests for `UserViewModel` and network decoding.
-- Move to feature-based modules for larger apps.
-- Add pagination and retry/backoff support for API calls.
+When creating a new app from this template:
+1. Replace API endpoint constants in `API_Client/`.
+2. Add/replace domain models in `Models/`.
+3. Create feature-specific view models in `ViewModels/`.
+4. Keep controllers thin and bind UI from view model outputs.
+
