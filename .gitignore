@@ -1,1 +1,12 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Generated
 R.generated.swift

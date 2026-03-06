@@ -1,25 +1,34 @@
-//
-//  GetUserDetailViewController.swift
-//  NetworkHelper
-//
-//  Created by Parth on 10/10/20.
-//  Copyright © 2020 Parth. All rights reserved.
-//
-
 import UIKit
 import Combine
 
-class GetUserDetailViewController: UIViewController {
-    
+final class GetUserDetailViewController: UIViewController {
     let userVm = UserViewModel()
     var cancellable = Set<AnyCancellable>()
-    var userName: String!
-    
+    var userName: String?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        userVm.getUserDetails(userName: userName)
-        userVm.$userDetails.sink { (user) in
-            print(user?.login)
-        }.store(in: &cancellable)
+        bindData()
+        if let userName {
+            title = userName
+            userVm.getUserDetails(userName: userName)
+        }
+    }
+
+    private func bindData() {
+        userVm.$userDetails
+            .compactMap { $0?.login }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] login in
+                self?.title = login
+            }
+            .store(in: &cancellable)
+
+        userVm.$error
+            .compactMap { $0?.localizedDescription }
+            .sink { errorMessage in
+                print("User details error: \(errorMessage)")
+            }
+            .store(in: &cancellable)
     }
 }

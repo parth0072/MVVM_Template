@@ -1,43 +1,66 @@
-//
-//  UserViewModel.swift
-//  NetworkHelper
-//
-//  Created by Parth on 09/10/20.
-//  Copyright © 2020 Parth. All rights reserved.
-//
-
 import Foundation
 import Combine
 
-class UserViewModel {
-    
-    var getUserList : ((_ success: [User]?, _ error: Error?) -> Void)?
-    
+protocol UserServicing {
+    func fetchUsers(since: Int, completion: @escaping (Result<[User], NetworkError>) -> Void)
+    func fetchUser(username: String, completion: @escaping (Result<User, NetworkError>) -> Void)
+}
+
+final class DefaultUserService: UserServicing {
+    private let client: ConnectionManager
+
+    init(client: ConnectionManager = .shared) {
+        self.client = client
+    }
+
+    func fetchUsers(since: Int, completion: @escaping (Result<[User], NetworkError>) -> Void) {
+        client.fetchUsers(since: since, completion: completion)
+    }
+
+    func fetchUser(username: String, completion: @escaping (Result<User, NetworkError>) -> Void) {
+        client.fetchUser(username: username, completion: completion)
+    }
+}
+
+final class UserViewModel {
+    private let userService: UserServicing
+    private let initialUserOffset: Int
+
     @Published var users = [User]()
-    
-    @Published var error: Error?
-    
+    @Published var error: NetworkError?
     @Published var userDetails: User?
-    
-    init() { }
-    
+
+    init(userService: UserServicing = DefaultUserService(), initialUserOffset: Int = 0) {
+        self.userService = userService
+        self.initialUserOffset = initialUserOffset
+    }
+
     func fetchUserList() {
-        ConnectionManager.getUser(since: "135") { (json, error) in
-            let users = json?.array
-            let usersObj = users?.compactMap{ User.init(with: $0)}
-            self.users = usersObj ?? []
-            self.error = error
-            self.getUserList?(usersObj, nil)
+        userService.fetchUsers(since: initialUserOffset) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let users):
+                    self?.users = users
+                    self?.error = nil
+                case .failure(let error):
+                    self?.users = []
+                    self?.error = error
+                }
+            }
         }
     }
-    
+
     func getUserDetails(userName: String) {
-        ConnectionManager.getUser(user: userName) { (json, error) in
-            if error == nil {
-                let user = User.init(with: json!)
-                self.userDetails = user
-            }else{
-                self.error = error
+        userService.fetchUser(username: userName) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let user):
+                    self?.userDetails = user
+                    self?.error = nil
+                case .failure(let error):
+                    self?.userDetails = nil
+                    self?.error = error
+                }
             }
         }
     }

@@ -1,33 +1,42 @@
-//
-//  ConnectionManager+FetchRequest.swift
-//  Coda
-//
-//  Created by Parth on 02/01/19.
-//  Copyright © 2019 stl-011. All rights reserved.
-//
-
 import Foundation
-import SwiftyJSON
-import Alamofire
 
 extension ConnectionManager {
-    class func getUser(since:String,completion: @escaping ( _ result: JSON?, _ error : Error?) -> Void) ->Void{
-        let urlLogin = "\(APIConstants.user())?since=\(since)"
-        //        let param :Parameters =  ["since": since]
-        let encodedUrl = urlLogin.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        self.fetchJson(urlString: encodedUrl, methodType:.get ,param : nil, headerInfo : header) { (data, er) in
-            completion(data,er)
+    func fetchUsers(since: Int, completion: @escaping (Result<[User], NetworkError>) -> Void) {
+        var components = URLComponents(url: API.baseURL.appendingPathComponent(API.usersPath), resolvingAgainstBaseURL: false)
+        components?.queryItems = [URLQueryItem(name: "since", value: String(since))]
+
+        guard let url = components?.url else {
+            completion(.failure(.invalidResponse))
+            return
         }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        self.request(request, completion: completion)
     }
-    
-    class func getUser(user:String,completion: @escaping ( _ result: JSON?, _ error : Error?) -> Void) ->Void{
-        let urlLogin = "\(APIConstants.user())/\(user)"
-        //        let param :Parameters =  ["since": since]
-        let encodedUrl = urlLogin.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        self.fetchJson(urlString: encodedUrl, methodType:.get ,param : nil, headerInfo : header) { (data, er) in
-            completion(data,er)
-        }
+
+    func fetchUser(username: String, completion: @escaping (Result<User, NetworkError>) -> Void) {
+        let escapedUsername = username.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? username
+        let url = API.baseURL
+            .appendingPathComponent(API.usersPath)
+            .appendingPathComponent(escapedUsername)
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        self.request(request, completion: completion)
+    }
+
+    static func fetchUsers(since: Int, completion: @escaping (Result<[User], NetworkError>) -> Void) {
+        shared.fetchUsers(since: since, completion: completion)
+    }
+
+    static func fetchUser(username: String, completion: @escaping (Result<User, NetworkError>) -> Void) {
+        shared.fetchUser(username: username, completion: completion)
     }
 }
 
-
+extension API {
+    static let usersPath = "users"
+}
